@@ -1,3 +1,5 @@
+# footnotes_assassin_v2.2.2 #
+
 import pdfplumber
 import pandas as pd
 from collections import Counter
@@ -71,3 +73,12 @@ with open(output_path, 'w', encoding='utf-8') as f:
     f.write(cleaned_text)
 
 print(f"Cleaned text exported to: {output_path}")
+
+    """
+    Notes: 
+    The script used pdfplumber's 'extract_words' method, which provides 
+    the raw height of each word. The script then uses a ratio which eliminates 
+    words that are 15% (or more) smaller then the main body text words. The result 
+    (theoretically) is a text file with all of the content minus the footnotes and 
+    other 'marginalia' which is not ideal to a text-to-speech experience.
+    """
