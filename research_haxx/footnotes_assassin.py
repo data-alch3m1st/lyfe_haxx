@@ -1,26 +1,34 @@
-# footnotes_assassin_v2.2.2 #
+# footnotes_assassin_v2.4.2 #
 
 import pdfplumber
 import pandas as pd
 from collections import Counter
 import os
 
-def extract_text_without_footnotes(pdf_path, threshold_ratio=0.90):
+import pdfplumber
+import pandas as pd
+from collections import Counter
+import os
+
+def extract_text_without_footnotes(
+    pdf_path
+    , threshold_ratio=0.90
+    , header_threshold=None  # e.g., 50 means: remove anything within top 50 units of page
+):
     """
-    Extracts text from a PDF, removing words that are smaller than a threshold
-    compared to the majority font size on each page. (As the intent is to remove 
-    all footnotes and other small non-body text for an output which will be 
-    exported to a text-to-speech app.) This will be ideal for grad students, 
-    researchers and academics who need to have the ability to consume scholarly 
-    works on the go.
+    Extracts text from a PDF, removing:
+    - Words that are smaller than a threshold relative to the main text (footnotes)
+    - Words within a specified top region of each page (headers), if header_threshold is set
     
     Args:
         pdf_path (str): Path to the PDF file
         threshold_ratio (float): Words with height smaller than this ratio of 
                                  the most common height will be considered footnotes
+        header_threshold (float or None): Distance from top of page (in points) to treat as header.
+                                          If None, headers are not filtered.
     
     Returns:
-        str: Entire document text without footnotes
+        str: Entire document text without footnotes and optional headers
     """
     all_pages_text = []
 
@@ -32,14 +40,20 @@ def extract_text_without_footnotes(pdf_path, threshold_ratio=0.90):
 
             df = pd.DataFrame(words)
 
-            # Determine the most common height
+            # Remove headers if header_threshold is set
+            if header_threshold is not None:
+                df = df[df['top'] > header_threshold]
+
+            # Determine the most common height from remaining words
+            if df.empty:
+                continue
             height_counts = Counter(df['height'])
             most_common_height = height_counts.most_common(1)[0][0]
 
             # Define height threshold
             height_threshold = most_common_height * threshold_ratio
 
-            # Filter words above threshold
+            # Filter out footnotes by height
             filtered_words = df[df['height'] >= height_threshold]
 
             # Reconstruct text in reading order
@@ -48,20 +62,23 @@ def extract_text_without_footnotes(pdf_path, threshold_ratio=0.90):
 
             all_pages_text.append(page_text)
 
-    # Join all pages with a newline between pages
     return "\n\n".join(all_pages_text)
 
 
 # ---------------- Example usage ---------------- #
 
-pdf_path = "./input/sample.pdf"
+pdf_path = "sample.pdf"
 output_dir = './output/'
 
-# Make sure the output directory exists
+# Create output directory if needed
 os.makedirs(output_dir, exist_ok=True)
 
-# Extract text without footnotes
-cleaned_text = extract_text_without_footnotes(pdf_path)
+# Adjust header_threshold per PDF as needed (e.g., 50 points from top)
+cleaned_text = extract_text_without_footnotes(
+    pdf_path
+    , threshold_ratio=0.90
+    , header_threshold=50  # set to None if not needed
+)
 
 # Build output filename
 base_name = os.path.splitext(os.path.basename(pdf_path))[0]
@@ -73,6 +90,10 @@ with open(output_path, 'w', encoding='utf-8') as f:
     f.write(cleaned_text)
 
 print(f"Cleaned text exported to: {output_path}")
+
+
+
+# NOTE: If you have some random words, phrases, watermarks or other nonsense that seems to be persistent,
 
     """
     Notes: 
