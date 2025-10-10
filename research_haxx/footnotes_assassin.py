@@ -5,7 +5,7 @@ import pandas as pd
 from collections import Counter
 import os
 
-def extract_text_without_footnotes(pdf_path, threshold_ratio=0.85):
+def extract_text_without_footnotes(pdf_path, threshold_ratio=0.90):
     """
     Extracts text from a PDF, removing words that are smaller than a threshold
     compared to the majority font size on each page. (As the intent is to remove 
