@@ -6,7 +6,11 @@ import os
 def extract_text_without_footnotes(pdf_path, threshold_ratio=0.85):
     """
     Extracts text from a PDF, removing words that are smaller than a threshold
-    compared to the majority font size on each page.
+    compared to the majority font size on each page. (As the intent is to remove 
+    all footnotes and other small non-body text for an output which will be 
+    exported to a text-to-speech app.) This will be ideal for grad students, 
+    researchers and academics who need to have the ability to consume scholarly 
+    works on the go.
     
     Args:
         pdf_path (str): Path to the PDF file
