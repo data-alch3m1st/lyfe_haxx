@@ -100,7 +100,7 @@ def pdf_to_txt(
     """
     Extracts text and writes it to a .txt file.
     If txt_output_path is not provided, automatically uses:
-        {pdf_basename}_CLEANED_TEXT.txt
+        '{'pdf_basename'}'_CLEANED_TEXT.txt
     If output_dir is provided, the file is saved there (created if missing).
     Otherwise, it's saved in the same directory as the PDF.
     """
