@@ -1,3 +1,5 @@
+# footnotes_assassin.py v3.0.0 #
+
 import pdfplumber
 import pandas as pd
 from collections import Counter
