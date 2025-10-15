@@ -133,7 +133,7 @@ def pdf_to_txt(
     
     
 # EXAMPLE USAGE:
-
+# Main intended usage - ingest single pdf from input folder, export to output folder;
 pdf_to_txt(
     pdf_path="./input/sample_article.pdf",
     output_dir="./output/",
@@ -141,3 +141,36 @@ pdf_to_txt(
     header_threshold=50,
     pages_to_skip="1, 3, 14"
 )
+
+# Example 1 — Auto filename in same directory as PDF
+pdf_to_txt(
+    pdf_path="./input/My_Research_Article.pdf"
+    , threshold_ratio=0.88
+    , header_threshold=50
+    , pages_to_skip="1-2, 10-12"
+)
+
+# Example 2 — Send all outputs to a dedicated folder
+pdf_to_txt(
+    pdf_path="./input/Another_Paper.pdf"
+    , output_dir="./output"
+    , threshold_ratio=0.90
+    , header_threshold=50
+    , pages_to_skip="1"
+)
+
+# Example 3 — Batch process multiple PDFs into one output_dir
+pdfs = [
+    "./input/article1.pdf"
+    , "./input/article2.pdf"
+    , "./input/article3.pdf"
+]
+
+for p in pdfs:
+    pdf_to_txt(
+        pdf_path=p
+        , output_dir="./output"
+        , threshold_ratio=0.88
+        , header_threshold=50
+        , pages_to_skip="1-2"
+    )
